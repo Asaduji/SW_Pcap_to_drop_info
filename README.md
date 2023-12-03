@@ -9,6 +9,7 @@ The reason why I don't include that dll is because it's closed source and packed
 
 # Usage
 Drop the .pcapng file into the .exe, it will generate the dump as .json in the same directory as the .pcapng file
+You must whitelist the IPs by adding them to the IpWhitelist.txt file, packets received to an IP not present there will be ignored
 
 # Compilation
 To compile just open the solution in Visual Studio 2022 and click "Compile", you can also compile the SWCryptWrapper.dll from its project solution the same way.
