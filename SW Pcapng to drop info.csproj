@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>SW_Pcap_to_drop_info</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="SWCryptWrapper\x64\**" />
+    <EmbeddedResource Remove="SWCryptWrapper\x64\**" />
+    <None Remove="SWCryptWrapper\x64\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="SWCryptWrapper\SWCryptWrapper.vcxproj" />
+    <None Include="SWCryptWrapper\SWCryptWrapper.vcxproj.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Haukcode.PcapngUtils" Version="1.3.22" />
+    <PackageReference Include="PacketDotNet" Version="1.4.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="IpWhitelist.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SWCrypt.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SWCryptWrapper.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
