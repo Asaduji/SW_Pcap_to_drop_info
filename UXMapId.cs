@@ -7,7 +7,7 @@
         public UXMapId(ulong value)
         {
             Value = value;
-            MapId = (ushort)((value & 0xFFFFFFFF00000000) >> 32 & 0xFFFF);
+            MapId = (ushort)(value >> 32 & 0xFFFF);
         }
     }
 }
