@@ -7,7 +7,8 @@ namespace SW_Pcapng_to_drop_info
 {
     internal class Program
     {
-        private static readonly HashSet<string> _ipWhitelist = new();
+        private static HashSet<string> _ipWhitelist = new();
+        private static HashSet<int> _itemBlacklist = new();
         private static readonly List<SoulWorkerDrop> _drops = new();
         private static readonly Dictionary<string, byte[]> _buffers = new();
         private static UXMapId _lastUXMapId = new(0);
@@ -29,7 +30,7 @@ namespace SW_Pcapng_to_drop_info
             }
 
             var whitelistPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IpWhitelist.txt");
-
+            var blacklistPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ItemBlacklist.txt");
 
             if (!File.Exists(whitelistPath))
             {
@@ -40,9 +41,16 @@ namespace SW_Pcapng_to_drop_info
 
             var whitelistLines = File.ReadAllLines(whitelistPath);
 
-            foreach (var entry in whitelistLines)
+            _ipWhitelist = whitelistLines.Select(x => x.Trim()).ToHashSet();
+
+            if (File.Exists(blacklistPath))
             {
-                _ipWhitelist.Add(entry);
+                var blacklistLines = File.ReadAllLines(blacklistPath);
+
+                _itemBlacklist = blacklistLines.Select(x => int.TryParse(x, out var id) ? id : (int?)null)
+                                    .Where(parsedValue => parsedValue.HasValue)
+                                    .Select(parsedValue => parsedValue!.Value)
+                                    .ToHashSet();
             }
 
             using var reader = new PcapNGReader(args[0], false);
@@ -186,9 +194,12 @@ namespace SW_Pcapng_to_drop_info
                         MapId = _lastUXMapId.MapId                        
                     };
 
-                    Console.WriteLine($"Found drop, Item ID: {drop.ItemId}, Amount: {drop.Amount}, at MapId: {drop.MapId}");
+                    if (!_itemBlacklist.Contains(id)) 
+                    {
+                        Console.WriteLine($"Found drop, Item ID: {drop.ItemId}, Amount: {drop.Amount}, at MapId: {drop.MapId}");
 
-                    _drops.Add(drop);
+                        _drops.Add(drop);
+                    }
                 }
 
             }
